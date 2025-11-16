@@ -53,6 +53,7 @@ class posterior(object):
         fit_info_str = file.attrs["fit_instructions"]
         fit_info_str = fit_info_str.replace("array", "np.array")
         fit_info_str = fit_info_str.replace("float", "np.float")
+        fit_info_str = fit_info_str.replace("np.np.", "np.")
         self.fit_instructions = eval(fit_info_str)
 
         self.fitted_model = fitted_model(self.galaxy, self.fit_instructions)
@@ -163,7 +164,9 @@ class posterior(object):
         self.model_galaxy = model_galaxy(self.fitted_model.model_components,
                                          filt_list=self.galaxy.filt_list,
                                          spec_wavs=self.galaxy.spec_wavs,
-                                         index_list=self.galaxy.index_list)
+                                         index_list=self.galaxy.index_list,
+                                         spec_units=self.galaxy.out_units,
+                                         phot_units=self.galaxy.out_units)
 
         all_names = ["photometry", "spectrum", "spectrum_full", "uvj",
                      "indices"]
@@ -177,6 +180,10 @@ class posterior(object):
 
         if self.galaxy.photometry_exists:
             self.samples["chisq_phot"] = np.zeros(self.n_samples)
+
+        if "dla" in list(self.fitted_model.model_components):
+            size = self.model_galaxy.spectrum_full.shape[0]
+            self.samples["dla_transmission"] = np.zeros((self.n_samples, size))
 
         if "dust" in list(self.fitted_model.model_components):
             size = self.model_galaxy.spectrum_full.shape[0]
@@ -199,6 +206,9 @@ class posterior(object):
 
             if self.galaxy.photometry_exists:
                 self.samples["chisq_phot"][i] = self.fitted_model.chisq_phot
+
+            if "dla" in list(self.fitted_model.model_components):
+                self.samples["dla_transmission"][i] = self.fitted_model.model_galaxy.dla_trans
 
             if "dust" in list(self.fitted_model.model_components):
                 dust_curve = self.fitted_model.model_galaxy.dust_atten.A_cont
