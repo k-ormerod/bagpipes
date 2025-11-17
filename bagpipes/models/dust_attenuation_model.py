@@ -77,17 +77,50 @@ class dust_attenuation(object):
         B = param["B"]
         Rv_m = 4.05/((4.05+1)*(4400./5500.)**delta - 4.05)
 
-        drude = B*self.wavelengths**2*350.**2
-        drude /= (self.wavelengths**2 - 2175.**2)**2 + self.wavelengths**2*350.**2
+        drude = B*self.wavelengths**2*250.**2
+        drude /= (self.wavelengths**2 - 2175.**2)**2 + self.wavelengths**2*250.**2
         A_cont = self.A_cont_calz*Rv_m*(self.wavelengths/5500.)**delta + drude
         A_cont /= Rv_m
 
-        drude = B*config.line_wavs**2*350.**2
-        drude /= (config.line_wavs**2 - 2175.**2)**2 + config.line_wavs**2*350.**2
+        drude = B*config.line_wavs**2*250.**2
+        drude /= (config.line_wavs**2 - 2175.**2)**2 + config.line_wavs**2*250.**2
         A_line = self.A_line_calz*Rv_m*(config.line_wavs/5500.)**delta + drude
         A_line /= Rv_m
 
         return A_cont, A_line
+    
+    def Li(self, param):
+        """
+        The analytical expression for the dust attenuation curve from Li et al. (2008),
+        normalised to the attenuation in the rest-frame optical range at 5500A.
+        Following Ormerod+2025 UV Bump paper. 
+        """
+
+        c1 = param["c1"]
+        c2 = param["c2"]
+        c3 = param["c3"]
+        c4 = param["c4"]
+
+        wavs = self.wavelengths * 1e-4
+        line_wavs = config.line_wavs * 1e-4
+
+        term1 = c1 / ((wavs / 0.08)**c2 + (0.08 / wavs)**c2 + c3)
+        term2 = 233 * (1 - c1 / (6.88**c2 + 0.145**c2 + c3) - c4 / 4.56) # 4.60
+        term2 /= (wavs / 0.046)**2 + (0.046 / wavs)**2 + 90
+        term3 = c4 / ((wavs / 0.2175)**2 + (0.2175 / wavs)**2 -1.9867882150878584)
+
+        A_cont = term1 + term2 + term3
+
+        term1 = c1 / ((line_wavs / 0.08)**c2 + (0.08 / line_wavs)**c2 + c3)
+        term2 = 233 * (1 - c1 / (6.88**c2 + 0.145**c2 + c3) - c4 / 4.56)
+        term2 /= (line_wavs / 0.046)**2 + (0.046 / line_wavs)**2 + 90
+        term3 = c4 / ((line_wavs / 0.2175)**2 + (0.2175 / line_wavs)**2 -1.9867882150878584) #original is -1.95
+
+        A_line = term1 + term2 + term3
+
+
+        return A_cont, A_line
+
 
     def VW07(self):
         """

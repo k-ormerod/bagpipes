@@ -135,7 +135,8 @@ class posterior(object):
 
         quantity_names = ["stellar_mass", "formed_mass", "sfr", "ssfr", "nsfr",
                           "mass_weighted_age", "tform", "tquench",
-                          "mass_weighted_zmet"]
+                          "mass_weighted_zmet", "sfr_3", "sfr_30", "sfr_50"] # Added sfr_3, sfr_30, sfr_50
+
 
         for q in quantity_names:
             self.samples[q] = np.zeros(self.n_samples)
@@ -279,7 +280,9 @@ class posterior(object):
         self.sfh = star_formation_history(self.fitted_model.model_components)
 
         quantity_names = ["stellar_mass", "formed_mass", "sfr", "ssfr", "nsfr",
-                          "mass_weighted_age", "tform", "tquench"]
+                          "mass_weighted_age", "tform", "tquench",
+                          "mass_weighted_zmet", "sfr_3", "sfr_30", "sfr_50"]
+
 
         for q in quantity_names:
             self.prediction_at_z[q] = np.zeros(self.n_samples)

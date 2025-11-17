@@ -18,10 +18,10 @@ negatively affects one or both of these things. """
 """ These variables control the wavelength sampling for models. """
 
 # Sets the maximum redshift the code is set up to calculate models for.
-max_redshift = 10.
+max_redshift = 20.
 
 # Sets the R = lambda/dlambda value for spectroscopic outputs.
-R_spec = 1000.
+R_spec = 600.
 
 # Sets the R = lambda/dlambda value for photometric outputs.
 R_phot = 100.
@@ -51,8 +51,7 @@ age_widths = age_bins[1:] - age_bins[:-1]
 age_sampling = 10**age_sampling
 
 # Timescale for the code to calculate SFRs over in years.
-sfr_timescale = 10**8  # This is 100 Myr by default
-
+sfr_timescale = 10**7  # 10 Myr SFRs
 
 """ These variables tell the code where to find the raw stellar emission
 models, as well as some of their basic properties. """
