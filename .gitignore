@@ -1,6 +1,9 @@
 bagpipes/models/grids/*.fits
+bagpipes/models/grids/
+bagpipes/models/grids_default/
 ancillary_code/*
 examples/*
+*.fits
 
 #################################
 

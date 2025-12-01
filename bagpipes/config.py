@@ -8,6 +8,8 @@ from astropy.io import fits
 from .utils import *
 from .models.making import igm_inoue2014
 
+stellar_template = "BPASS" # or "BC03"
+
 """ This file contains all of the configuration variables for Bagpipes.
 This includes loading different grids of models into the code, and the
 way the spectral sampling for models is constructed. The default values
@@ -57,33 +59,46 @@ sfr_timescale = 10**7  # 10 Myr SFRs
 models, as well as some of their basic properties. """
 
 try:
-    # Name of the fits file storing the stellar models
-    stellar_file = "bc03_miles_stellar_grids.fits"
+    if stellar_template == "BC03":
+        # Name of the fits file storing the stellar models
+        stellar_file = "bc03_miles_stellar_grids.fits"
 
-    # The metallicities of the stellar grids in units of Z_Solar
-    metallicities = np.array([0.005, 0.02, 0.2, 0.4, 1., 2.5, 5.])
+        # The metallicities of the stellar grids in units of Z_Solar
+        metallicities = np.array([0.005, 0.02, 0.2, 0.4, 1., 2.5, 5.])
 
-    # The wavelengths of the grid points in Angstroms
-    wavelengths = fits.open(grid_dir + "/" + stellar_file)[-1].data
+        # The wavelengths of the grid points in Angstroms
+        wavelengths = fits.open(grid_dir + "/" + stellar_file)[-1].data
 
-    # The ages of the grid points in Gyr
-    raw_stellar_ages = fits.open(grid_dir + "/" + stellar_file)[-2].data
+        # The ages of the grid points in Gyr
+        raw_stellar_ages = fits.open(grid_dir + "/" + stellar_file)[-2].data
 
-    # The fraction of stellar mass still living (1 - return fraction).
-    # Axis 0 runs over metallicity, axis 1 runs over age.
-    live_frac = fits.open(grid_dir + "/" + stellar_file)[-3].data[:, 1:]
+        # The fraction of stellar mass still living (1 - return fraction).
+        # Axis 0 runs over metallicity, axis 1 runs over age.
+        live_frac = fits.open(grid_dir + "/" + stellar_file)[-3].data[:, 1:]
+    
+    elif stellar_template == "BPASS":
+        # Name of the fits file storing the stellar models
+        stellar_file = "bpass_v2.3.a+02_stellar_grids.fits"
+
+        # The metallicities of the stellar grids in units of Z_Solar
+        metallicities = np.array([10**-5, 10**-4, 0.001, 0.002, 0.003, 0.004,
+                                0.006, 0.008, 0.010, 0.014, 0.020, 0.030,
+                                0.040])/0.02
+
+        # The wavelengths of the grid points in Angstroms
+        wavelengths = fits.open(grid_dir + "/" + stellar_file)[-1].data
+
+        # The ages of the grid points in Gyr
+        raw_stellar_ages = fits.open(grid_dir + "/" + stellar_file)[-2].data
+
+        # The fraction of stellar mass still living (1 - return fraction).
+        # Axis 0 runs over metallicity, axis 1 runs over age.
+        live_frac = fits.open(grid_dir + "/" + stellar_file)[-3].data
 
     # The raw stellar grids, stored as a FITS HDUList.
     # The different HDUs are the grids at different metallicities.
     # Axis 0 of each grid runs over wavelength, axis 1 over age.
-    raw_stellar_grid = fits.open(grid_dir + "/" + stellar_file)[1:-3]
-
-    # Check that metallicities have been updated with the stellar file.
-    grids = fits.open(grid_dir + "/" + stellar_file)
-    if len(grids) > len(metallicities) + 4:
-        print("Warning: More grids found in " + stellar_file + " than expected."
-              + " Check that the metallicities listed in bagpipes/config.py are"
-              + " correct.")
+    raw_stellar_grid = fits.open(grid_dir + "/" + stellar_file)[1:14]
 
     # Set up edge positions for metallicity bins for stellar models.
     metallicity_bins = make_bins(metallicities, make_rhs=True)[0]
@@ -98,14 +113,18 @@ except IOError:
 """ These variables tell the code where to find the raw nebular emission
 models, as well as some of their basic properties. """
 
-# LogU values for the nebular emission grids.
 logU = np.arange(-4., 0.01, 0.5)
 
-# Names of files containing the nebular grids.
-neb_cont_file = "bc03_miles_nebular_cont_grids_extended_logU_nograins_cloudy25.fits"
-neb_line_file = "bc03_miles_nebular_line_grids_extended_logU_nograins_cloudy25.fits"
+
+if stellar_template == "BC03":
+    neb_cont_file = "bc03_miles_nebular_cont_grids_extended_logU_nograins_cloudy25.fits"
+    neb_line_file = "bc03_miles_nebular_line_grids_extended_logU_nograins_cloudy25.fits"
+if stellar_template == "BPASS":
+    neb_cont_file = "bpass_v2.3.a+02_nebular_cont_grids.fits"
+    neb_line_file = "bpass_v2.3.a+02_nebular_line_grids.fits"
 
 try:
+
     # Names for the emission features to be tracked.
     line_names = np.loadtxt(grid_dir + "/cloudy_lines.txt",
                             dtype="str", delimiter="}")
