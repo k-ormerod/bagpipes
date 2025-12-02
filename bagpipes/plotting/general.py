@@ -104,6 +104,8 @@ def update_rcParams():
 
     if tex_on:
         mpl.rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
+    else: 
+        mpl.rcParams["text.usetex"] = False
 
 
 def make_hist_arrays(x, y):
