@@ -8,7 +8,8 @@ from astropy.io import fits
 from .utils import *
 from .models.making import igm_inoue2014
 
-stellar_template = "BPASS" # or "BC03"
+# stellar_template = "BPASS" # or "BC03"
+stellar_template = "BC03"  # or "BPASS"
 
 """ This file contains all of the configuration variables for Bagpipes.
 This includes loading different grids of models into the code, and the
