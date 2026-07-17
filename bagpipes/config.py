@@ -63,6 +63,7 @@ try:
     if stellar_template == "BC03":
         # Name of the fits file storing the stellar models
         stellar_file = "bc03_miles_stellar_grids.fits"
+        print("Using BC03 Stellar Templates")
 
         # The metallicities of the stellar grids in units of Z_Solar
         metallicities = np.array([0.005, 0.02, 0.2, 0.4, 1., 2.5, 5.])
