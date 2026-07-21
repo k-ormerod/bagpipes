@@ -108,6 +108,7 @@ def add_spectrum_posterior(fit, ax, zorder=4, y_scale=None):
     if not y_scale:
         y_scale = float(int(np.log10(ymax))-1)
 
+
     wavs = fit.galaxy.spectrum[:, 0]
     spec_post = np.copy(fit.posterior.samples["spectrum"])
 

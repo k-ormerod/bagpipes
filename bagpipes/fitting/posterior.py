@@ -135,7 +135,7 @@ class posterior(object):
 
         quantity_names = ["stellar_mass", "formed_mass", "sfr", "ssfr", "nsfr",
                           "mass_weighted_age", "tform", "tquench",
-                          "mass_weighted_zmet", "sfr_3", "sfr_30", "sfr_50,"
+                          "mass_weighted_zmet", "sfr_3", "sfr_30", "sfr_50",
                           "sfr_100"] # Added sfr_3, sfr_30, sfr_50, sfr_100
 
 
