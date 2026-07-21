@@ -139,7 +139,7 @@ class star_formation_history:
         self.mass_weighted_age = np.sum(self.sfh*self.age_widths*self.ages)
         self.mass_weighted_age /= np.sum(self.sfh*self.age_widths)
 
-        """ Add alternative SF timescales: 3, 30, 50 Myr """
+        """ Add alternative SF timescales: 3, 30, 50, 100 Myr """
 
         age_mask_3Myr = (self.ages < 0.3e7)
         self.sfr_3 = np.sum(self.sfh[age_mask_3Myr]*self.age_widths[age_mask_3Myr])
@@ -153,6 +153,9 @@ class star_formation_history:
         self.sfr_50 = np.sum(self.sfh[age_mask_50Myr]*self.age_widths[age_mask_50Myr])
         self.sfr_50 /= self.age_widths[age_mask_50Myr].sum()
 
+        age_mask_100Myr = (self.ages < 10e7)
+        self.sfr_100 = np.sum(self.sfh[age_mask_100Myr]*self.age_widths[age_mask_100Myr])
+        self.sfr_100 /= self.age_widths[age_mask_100Myr].sum()
 
         # Calculate nth percentile formation time
         # perc = 90
